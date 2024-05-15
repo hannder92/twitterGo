@@ -9,9 +9,9 @@ import (
 	"github.com/hannder92/routers"
 )
 
-func Manejadores(ctx context.Context, request events.APIGatewayProxyRequest) models.RespAPI {
+func Manejadores(ctx context.Context, request events.APIGatewayProxyRequest) models.RespApi {
 	fmt.Println("Voy a procesar " + ctx.Value(models.Key("path")).(string) + " > " + ctx.Value(models.Key("method")).(string))
-	var r models.RespAPI
+	var r models.RespApi
 	r.Status = 400
 
 	isOK, statusCode, msg, _ := validoAutorization(ctx, request)

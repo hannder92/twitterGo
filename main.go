@@ -2,16 +2,16 @@ package main
 
 import (
 	"context"
-	"github.com/aws/aws-lambda-go/events"
-	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/hannder92/awsgo"
 	"github.com/hannder92/bd"
 	"github.com/hannder92/handlers"
 	"github.com/hannder92/models"
 	"github.com/hannder92/secretmanager"
-	"net/http"
 	"os"
 	"strings"
+
+	"github.com/aws/aws-lambda-go/events"
+	lambda "github.com/aws/aws-lambda-go/lambda"
 )
 
 func main() {
@@ -25,19 +25,20 @@ func EjecutoLambda(ctx context.Context, request events.APIGatewayProxyRequest) (
 
 	if !ValidoParametros() {
 		res = &events.APIGatewayProxyResponse{
-			StatusCode: http.StatusBadRequest,
-			Body:       "Error en las variables de entorno. Deben incluir 'SecretName', 'BucketName' y 'UrlPrefix'",
+			StatusCode: 400,
+			Body:       "Error en las variables de entorno. deben incluir 'SecretName', 'BucketName', 'UrlPrefix'",
 			Headers: map[string]string{
 				"Content-Type": "application/json",
 			},
 		}
 		return res, nil
 	}
+
 	SecretModel, err := secretmanager.GetSecret(os.Getenv("SecretName"))
 	if err != nil {
 		res = &events.APIGatewayProxyResponse{
-			StatusCode: http.StatusBadRequest,
-			Body:       "Error en la lectura de secret " + err.Error(),
+			StatusCode: 400,
+			Body:       "Error en la lectura de Secret " + err.Error(),
 			Headers: map[string]string{
 				"Content-Type": "application/json",
 			},
@@ -57,12 +58,13 @@ func EjecutoLambda(ctx context.Context, request events.APIGatewayProxyRequest) (
 	awsgo.Ctx = context.WithValue(awsgo.Ctx, models.Key("body"), request.Body)
 	awsgo.Ctx = context.WithValue(awsgo.Ctx, models.Key("bucketName"), os.Getenv("BucketName"))
 
-	//Chequeo conexion a la BD o Conecto la BD
+	// Chequeo Conexión a la BD o Conecto la BD
+
 	err = bd.ConectarDB(awsgo.Ctx)
 	if err != nil {
 		res = &events.APIGatewayProxyResponse{
-			StatusCode: http.StatusInternalServerError,
-			Body:       "Error conectando a la BD " + err.Error(),
+			StatusCode: 500,
+			Body:       "Error conectando la BD " + err.Error(),
 			Headers: map[string]string{
 				"Content-Type": "application/json",
 			},
@@ -83,7 +85,6 @@ func EjecutoLambda(ctx context.Context, request events.APIGatewayProxyRequest) (
 	} else {
 		return respAPI.CustomResp, nil
 	}
-
 }
 
 func ValidoParametros() bool {
@@ -91,13 +92,16 @@ func ValidoParametros() bool {
 	if !traeParametro {
 		return traeParametro
 	}
+
 	_, traeParametro = os.LookupEnv("BucketName")
 	if !traeParametro {
 		return traeParametro
 	}
+
 	_, traeParametro = os.LookupEnv("UrlPrefix")
 	if !traeParametro {
 		return traeParametro
 	}
+
 	return traeParametro
 }
