@@ -3,6 +3,6 @@ git commit -m "Ultimo commit"
 git push
 set GOOS=linux
 set GOARCH=amd64
-go build main.go
-del main.zip
-tar.exe -a -cf main.zip main
+set CGO_ENABLED=0
+go build -tags lambda.norpc -o bootstrap main.go
+%USERPROFILE%\Go\bin\build-lambda-zip.exe -o myFunction.zip bootstrap
