@@ -6,17 +6,18 @@ import (
 )
 
 func IntentoLogin(email string, password string) (models.Usuario, bool) {
-	usuario, encontrado, _ := ChequeoYaExisteUsuario(email)
-	if encontrado {
-		return usuario, false
+	usu, encontrado, _ := ChequeoYaExisteUsuario(email)
+	if !encontrado {
+		return usu, false
 	}
 
 	passwordBytes := []byte(password)
-	passwordBD := []byte(usuario.Password)
+	passwordBD := []byte(usu.Password)
 
 	err := bcrypt.CompareHashAndPassword(passwordBD, passwordBytes)
 	if err != nil {
-		return usuario, false
+		return usu, false
 	}
-	return usuario, true
+
+	return usu, true
 }

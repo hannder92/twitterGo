@@ -8,6 +8,7 @@ import (
 
 func ChequeoYaExisteUsuario(email string) (models.Usuario, bool, string) {
 	ctx := context.TODO()
+
 	db := MongoCN.Database(DatabaseName)
 	col := db.Collection("usuarios")
 
