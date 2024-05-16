@@ -14,7 +14,7 @@ func Manejadores(ctx context.Context, request events.APIGatewayProxyRequest) mod
 	var r models.RespApi
 	r.Status = 400
 
-	isOK, statusCode, msg, _ := validoAuthorization(ctx, request)
+	isOK, statusCode, msg, claim := validoAuthorization(ctx, request)
 
 	if !isOK {
 		r.Status = statusCode
@@ -37,7 +37,8 @@ func Manejadores(ctx context.Context, request events.APIGatewayProxyRequest) mod
 		}
 	case "PUT":
 		switch ctx.Value(models.Key("path")).(string) {
-
+		case "modificarperfil":
+			return routers.ModificarPerfil(ctx, claim)
 		}
 	case "DELETE":
 		switch ctx.Value(models.Key("path")).(string) {
