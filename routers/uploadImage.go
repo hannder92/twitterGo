@@ -33,7 +33,7 @@ func UploadImage(ctx context.Context, uploadType string, request events.APIGatew
 	var filename string
 	var usuario models.Usuario
 
-	bucket := aws.String(ctx.Value(models.Key("bucket")).(string))
+	bucket := aws.String(ctx.Value(models.Key("bucketName")).(string))
 
 	switch uploadType {
 	case "A":
