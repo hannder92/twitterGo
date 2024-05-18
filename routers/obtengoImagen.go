@@ -13,7 +13,7 @@ import (
 	"io"
 )
 
-func ObtengoImagen(ctx context.Context, downloadType string, request events.APIGatewayProxyRequest, claim models.Claim) models.RespApi {
+func ObtenerImagen(ctx context.Context, downloadType string, request events.APIGatewayProxyRequest, claim models.Claim) models.RespApi {
 	var r models.RespApi
 	r.Status = 400
 
